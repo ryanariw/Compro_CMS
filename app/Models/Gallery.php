@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Gallery extends Model
 {
@@ -15,7 +14,11 @@ class Gallery extends Model
         'is_active',
     ];
 
-    public function images(): HasMany
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    public function images()
     {
         return $this->hasMany(GalleryImage::class);
     }

@@ -1,47 +1,87 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="auth-card">
+        <span class="auth-badge">ADMIN ACCESS</span>
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+        <h2 class="auth-title">Welcome back</h2>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <p class="auth-desc">
+            Masuk ke dashboard untuk mengelola konten company profile kamu.
+        </p>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        @if (session('status'))
+            <div class="alert-auth alert-success">
+                {{ session('status') }}
+            </div>
+        @endif
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+        @if ($errors->any())
+            <div class="alert-auth alert-danger">
+                Email atau password belum sesuai. Silakan cek kembali data login kamu.
+            </div>
+        @endif
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+        <form method="POST" action="{{ route('login') }}" class="auth-form">
+            @csrf
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+                <input id="email"
+                       type="email"
+                       name="email"
+                       value="{{ old('email') }}"
+                       required
+                       autofocus
+                       autocomplete="username"
+                       placeholder="admin@example.com"
+                       class="form-control-auth">
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
+                @error('email')
+                    <div class="form-error">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <div class="form-row">
+                    <label for="password" class="form-label">Password</label>
+
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="auth-link">
+                            Lupa password?
+                        </a>
+                    @endif
+                </div>
+
+                <input id="password"
+                       type="password"
+                       name="password"
+                       required
+                       autocomplete="current-password"
+                       placeholder="Masukkan password"
+                       class="form-control-auth">
+
+                @error('password')
+                    <div class="form-error">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label class="check-row">
+                    <input type="checkbox" name="remember">
+                    <span>Ingat saya di perangkat ini</span>
+                </label>
+            </div>
+
+            <button type="submit" class="auth-button">
+                Masuk Dashboard
+            </button>
+        </form>
+
+        @if (Route::has('register'))
+            <p class="auth-footer">
+                Belum punya akun?
+                <a href="{{ route('register') }}" class="auth-link">Daftar sekarang</a>
+            </p>
+        @endif
+    </div>
 </x-guest-layout>

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GalleryImage extends Model
 {
@@ -15,7 +14,12 @@ class GalleryImage extends Model
         'is_active',
     ];
 
-    public function gallery(): BelongsTo
+    protected $casts = [
+        'is_active' => 'boolean',
+        'sort_order' => 'integer',
+    ];
+
+    public function gallery()
     {
         return $this->belongsTo(Gallery::class);
     }

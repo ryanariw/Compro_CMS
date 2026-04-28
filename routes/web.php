@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Profile\HomeController as ProfileHomeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ProjectController;
@@ -10,9 +11,7 @@ use App\Http\Controllers\Admin\GalleryImageController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ProfileHomeController::class, 'index'])->name('home');
 
 // Admin Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -29,7 +28,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
