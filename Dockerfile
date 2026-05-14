@@ -37,7 +37,7 @@ RUN mkdir -p storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 # Copy production environment
-COPY .env.Prod .env
+COPY .env.production .env
 
 # Install Node dependencies for Vue/Vite
 RUN npm install
