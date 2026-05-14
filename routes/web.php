@@ -9,9 +9,16 @@ use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\GalleryImageController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\ProductPublicController;
 
 
 Route::get('/', [ProfileHomeController::class, 'index'])->name('home');
+
+Route::get('/products', [ProductPublicController::class, 'index'])->name('products.index');
+Route::get('/products/{product:slug}', [ProductPublicController::class, 'show'])->name('products.show');
+
+Route::get('/galleries/{gallery}', [\App\Http\Controllers\GalleryPublicController::class, 'show'])->name('galleries.show');
 
 // Admin Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -24,6 +31,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/galleries/{gallery}/images', [GalleryImageController::class, 'index'])->name('galleries.images.index');
     Route::post('/galleries/{gallery}/images', [GalleryImageController::class, 'store'])->name('galleries.images.store');
     Route::delete('/galleries/images/{image}', [GalleryImageController::class, 'destroy'])->name('galleries.images.destroy');
+    Route::resource('/products', ProductController::class);
+    Route::delete('/products/images/{image}', [ProductController::class, 'destroyImage'])->name('products.images.destroy');
 });
 
 

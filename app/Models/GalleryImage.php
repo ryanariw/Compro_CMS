@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -15,12 +16,20 @@ class GalleryImage extends Model
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_active'  => 'boolean',
         'sort_order' => 'integer',
     ];
 
     public function gallery()
     {
         return $this->belongsTo(Gallery::class);
+    }
+
+    /**
+     * Helper: URL lengkap gambar, siap pakai di blade.
+     */
+    public function getImageUrlAttribute(): string
+    {
+        return asset('storage/' . $this->image);
     }
 }

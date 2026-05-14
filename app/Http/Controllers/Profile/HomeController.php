@@ -7,6 +7,7 @@ use App\Models\Gallery;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Setting;
+use App\Models\Product;
 
 class HomeController extends Controller
 {
@@ -26,6 +27,12 @@ class HomeController extends Controller
                 ->get(),
 
             'galleries' => Gallery::where('is_active', true)
+                ->latest()
+                ->take(6)
+                ->get(),
+
+            'products' => Product::where('is_active', true)
+                ->with('images')
                 ->latest()
                 ->take(6)
                 ->get(),

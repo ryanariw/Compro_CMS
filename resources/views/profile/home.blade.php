@@ -136,7 +136,58 @@ section{padding:88px 0;}
 footer{background:var(--brown);padding:32px 24px;text-align:center;color:rgba(255,255,255,.4);font-size:13px;}
 footer strong{color:var(--gold);}
 
+/* Mobile navbar */
+.mobile-menu-btn{
+    display:none;
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    border:1px solid rgba(201,168,76,.35);
+    background:rgba(255,255,255,.7);
+    backdrop-filter: blur(10px);
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+}
+.mobile-menu-btn span{
+    display:block;
+    width:18px;
+    height:2px;
+    background:#8B6914;
+    margin:3px 0;
+    border-radius:999px;
+    transition: all .25s;
+}
+.mobile-nav{
+    display:none;
+    position:fixed;
+    top:68px;
+    left:0;
+    right:0;
+    z-index:999;
+    background:rgba(250,246,238,.99);
+    border-top:1px solid rgba(201,168,76,.25);
+    border-bottom:1px solid rgba(201,168,76,.15);
+    padding:10px 0;
+    box-shadow:0 8px 24px rgba(59,42,20,.08);
+}
+.mobile-nav.is-open{display:block;}
+.mobile-nav a{
+    display:block;
+    padding:13px 24px;
+    color:#6B4C28;
+    font-size:14px;
+    font-weight:600;
+    border-bottom:1px solid rgba(201,168,76,.10);
+    transition:background .18s, color .18s;
+}
+.mobile-nav a:last-child{border-bottom:0;}
+.mobile-nav a:hover{background:rgba(201,168,76,.08);color:#8B6914;}
+
 @media(max-width:900px){
+    .mobile-menu-btn{display:inline-flex;}
+    .nav-menu{display:none;}
     .hero-grid,.about-grid,.contact-box{grid-template-columns:1fr;gap:40px;}
     .hero-visual{display:none;}
     .grid-3,.locations-grid{grid-template-columns:1fr 1fr;}
@@ -145,13 +196,16 @@ footer strong{color:var(--gold);}
 }
 @media(max-width:600px){
     .grid-3,.locations-grid{grid-template-columns:1fr;}
-    .nav-menu a:not(.nav-cta){display:none;}
 }
 </style>
 
 {{-- ===== NAVBAR ===== --}}
 <header class="navbar">
-    <div class="container navbar-inner">
+    <div class="container navbar-inner" style="position:relative;">
+        <button type="button" class="mobile-menu-btn" aria-label="Buka menu" aria-expanded="false" aria-controls="mobile-nav">
+            <span></span><span></span><span></span>
+        </button>
+
         <a href="{{ route('home') }}" class="brand">
             <div class="brand-icon">
                 <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
@@ -166,11 +220,58 @@ footer strong{color:var(--gold);}
             <a href="#about">About</a>
             <a href="#services">Services</a>
             <a href="#projects">Projects</a>
+            <a href="#gallery">Gallery</a>
             <a href="#locations">Lokasi</a>
+            <a href="{{ route('products.index') }}">Product</a>
             <a href="{{ $waLink }}" class="nav-cta" target="_blank">💬 Konsultasi</a>
+        </nav>
+
+        {{-- Mobile dropdown menu --}}
+        <nav class="mobile-nav" id="mobile-nav" role="navigation" aria-label="Mobile menu">
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#projects">Projects</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#locations">Lokasi</a>
+            <a href="{{ route('products.index') }}">Product</a>
+            <a href="{{ $waLink }}" target="_blank">💬 Konsultasi</a>
         </nav>
     </div>
 </header>
+
+<script>
+    (function () {
+        const btn = document.querySelector('.mobile-menu-btn');
+        const menu = document.getElementById('mobile-nav');
+        if (!btn || !menu) return;
+
+        function setExpanded(val) {
+            btn.setAttribute('aria-expanded', String(val));
+        }
+
+        btn.addEventListener('click', function () {
+            const isOpen = menu.classList.toggle('is-open');
+            setExpanded(isOpen);
+        });
+
+        // Close when clicking link (except external)
+        menu.addEventListener('click', function (e) {
+            const a = e.target.closest('a');
+            if (!a) return;
+            // If external target _blank, keep open is fine; but closing is also fine.
+            menu.classList.remove('is-open');
+            setExpanded(false);
+        });
+
+        // Close on escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                menu.classList.remove('is-open');
+                setExpanded(false);
+            }
+        });
+    })();
+</script>
 
 {{-- ===== HERO ===== --}}
 <section id="home">
@@ -299,6 +400,9 @@ footer strong{color:var(--gold);}
         @endfor
     </div>
 </div>
+
+{{-- ===== PRODUCT TABLE (Landing) ===== --}}
+{{-- section dihapus sesuai permintaan; produk dilihat via navbar /products --}}
 
 {{-- ===== ABOUT US ===== --}}
 <section id="about">
@@ -517,15 +621,21 @@ footer strong{color:var(--gold);}
             @forelse($galleries as $gallery)
                 <article class="project-card">
                     @if ($gallery->cover_image)
-                        <img src="{{ asset('storage/' . $gallery->cover_image) }}"
-                             alt="{{ $gallery->title }}"
-                             class="gallery-img">
+                        <a href="{{ route('galleries.show', $gallery) }}" class="gallery-link">
+                            <img src="{{ asset('storage/' . $gallery->cover_image) }}"
+                                 alt="{{ $gallery->title }}"
+                                 class="gallery-img">
+                        </a>
                     @else
-                        <div class="gallery-img" style="display:flex;align-items:center;justify-content:center;color:rgba(201,168,76,0.4);font-size:36px;">◎</div>
+                        <a href="{{ route('galleries.show', $gallery) }}" class="gallery-link">
+                            <div class="gallery-img" style="display:flex;align-items:center;justify-content:center;color:rgba(201,168,76,0.4);font-size:36px;">◎</div>
+                        </a>
                     @endif
                     <div class="card-body">
-                        <h3>{{ $gallery->title }}</h3>
-                        <p>{{ \Illuminate\Support\Str::limit($gallery->description ?? 'Deskripsi gallery belum tersedia.', 125) }}</p>
+                        <a href="{{ route('galleries.show', $gallery) }}" style="text-decoration:none;color:inherit;">
+                            <h3>{{ $gallery->title }}</h3>
+                            <p>{{ \Illuminate\Support\Str::limit($gallery->description ?? 'Deskripsi gallery belum tersedia.', 125) }}</p>
+                        </a>
                     </div>
                 </article>
             @empty
@@ -623,8 +733,8 @@ footer strong{color:var(--gold);}
                         title="Lokasi GRC Classic Art Jakarta">
                     </iframe>
                     <div class="map-link-row">
-                        <small>📍 Jakarta — Kantor Pusat</small>
-                        <a href="https://maps.app.goo.gl/" target="_blank" rel="noopener">Buka di Google Maps →</a>
+                        <small>📍 Workshop Pusat Tangerang Selatan</small>
+                        <a href="https://maps.app.goo.gl/BXCfLP6zdTL8gJYa7" target="_blank" rel="noopener">Buka di Google Maps →</a>
                     </div>
                 </div>
             </div>
