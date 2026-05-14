@@ -1,17 +1,17 @@
 version: "3"
 
 services:
-    invoice-backend-prod:
+    compro-grc-prod:
         build: .
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.invoice-backend-prod-http.entrypoints=web"
-            - "traefik.http.routers.invoice-backend-prod-http.rule=Host(`comprogrc.appstage.my.id`)"
-            - "traefik.http.routers.invoice-backend-prod-http.middlewares=redirect-to-https"
-            - "traefik.http.routers.invoice-backend-prod.entrypoints=websecure"
-            - "traefik.http.routers.invoice-backend-prod.tls.certresolver=myresolver"
-            - "traefik.http.routers.invoice-backend-prod.rule=Host(`comprogrc.appstage.my.id`)"
-            - "traefik.http.routers.invoice-backend-prod.tls=true"
+            - "traefik.http.routers.compro-grc-prod-http.entrypoints=web"
+            - "traefik.http.routers.compro-grc-prod-http.rule=Host(`comprogrc.appstage.my.id`)"
+            - "traefik.http.routers.compro-grc-prod-http.middlewares=redirect-to-https"
+            - "traefik.http.routers.compro-grc-prod.entrypoints=websecure"
+            - "traefik.http.routers.compro-grc-prod.tls.certresolver=myresolver"
+            - "traefik.http.routers.compro-grc-prod.rule=Host(`comprogrc.appstage.my.id`)"
+            - "traefik.http.routers.compro-grc-prod.tls=true"
         restart: always
         networks:
             - traefik_default
