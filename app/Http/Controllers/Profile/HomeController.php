@@ -26,7 +26,15 @@ class HomeController extends Controller
                 ->take(6)
                 ->get(),
 
-            'galleries' => Gallery::where('is_active', true)
+            'galleries' => Gallery::query()
+                ->where(function ($q) {
+                    // data lama bisa punya is_active NULL; anggap tetap aktif
+                    $q->where('is_active', true)->orWhereNull('is_active');
+                })
+                ->with(['images' => function ($q) {
+                    // ambil semua image untuk gallery (filter tampilnya di public layer)
+                    $q->orderBy('sort_order')->orderBy('id');
+                }])
                 ->latest()
                 ->take(6)
                 ->get(),

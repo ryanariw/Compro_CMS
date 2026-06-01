@@ -13,12 +13,14 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ProductPublicController;
 
 
+
 Route::get('/', [ProfileHomeController::class, 'index'])->name('home');
 
 Route::get('/products', [ProductPublicController::class, 'index'])->name('products.index');
 Route::get('/products/{product:slug}', [ProductPublicController::class, 'show'])->name('products.show');
 
 Route::get('/galleries/{gallery}', [\App\Http\Controllers\GalleryPublicController::class, 'show'])->name('galleries.show');
+
 
 // Admin Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {

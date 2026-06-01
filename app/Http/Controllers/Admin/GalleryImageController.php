@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Gallery;
 use App\Models\GalleryImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class GalleryImageController extends Controller
@@ -15,7 +16,10 @@ class GalleryImageController extends Controller
      */
     public function index(Gallery $gallery)
     {
-        $images = $gallery->images()->orderBy('sort_order')->orderBy('id')->get();
+        $images = $gallery->images()
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
 
         return view('admin.galleries.images.index', compact('gallery', 'images'));
     }
@@ -25,28 +29,15 @@ class GalleryImageController extends Controller
      */
     public function store(Request $request, Gallery $gallery)
     {
-        $request->validate([
-            'images'    => ['required', 'array', 'min:1'],
-            'images.*'  => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
-            'title'     => ['nullable', 'string', 'max:255'],
+        return response()->json([
+            'hit' => true,
+            'gallery_id' => $gallery->id,
+            'has_images' => $request->hasFile('images'),
+            'images_files_count' => is_array($request->file('images'))
+                ? count($request->file('images'))
+                : ($request->file('images') ? 1 : 0),
+            'content_type' => $request->header('Content-Type'),
         ]);
-
-        foreach ($request->file('images') as $file) {
-            // Simpan ke storage/app/public/galleries/images/
-            $path = $file->store('galleries/images', 'public');
-
-            GalleryImage::create([
-                'gallery_id' => $gallery->id,
-                'image'      => $path,
-                'title'      => $request->input('title'),
-                'sort_order' => 0,
-                'is_active'  => true,
-            ]);
-        }
-
-        return redirect()
-            ->route('admin.galleries.images.index', $gallery)
-            ->with('success', count($request->file('images')) . ' gambar berhasil diupload.');
     }
 
     /**

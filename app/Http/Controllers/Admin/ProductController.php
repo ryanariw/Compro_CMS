@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -25,24 +24,22 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'              => ['required', 'string', 'max:255'],
-            'category'          => ['nullable', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'category' => ['nullable', 'string', 'max:255'],
             'short_description' => ['nullable', 'string'],
-            'description'       => ['nullable', 'string'],
-            'is_active'         => ['nullable', 'boolean'],
+            'description' => ['nullable', 'string'],
+            'is_active' => ['nullable', 'boolean'],
 
-            // Fotografi: min 5 dan max 5, tiap foto min 7MB
-            'images'            => ['required', 'array', 'min:5', 'max:5'],
-            'images.*'          => ['image', 'mimes:jpg,jpeg,png,webp', 'max:7168'],
+            'images' => ['required', 'array', 'min:5', 'max:5'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:7168'],
 
-            'spec_keys'         => ['nullable', 'array'],
-            'spec_vals'         => ['nullable', 'array'],
+            'spec_keys' => ['nullable', 'array'],
+            'spec_vals' => ['nullable', 'array'],
         ]);
 
-        $validated['slug']      = $this->generateUniqueSlug($validated['name']);
+        $validated['slug'] = $this->generateUniqueSlug($validated['name']);
         $validated['is_active'] = $request->boolean('is_active');
 
-        // Build specs array from key-value pairs
         $specs = [];
         if ($request->filled('spec_keys')) {
             foreach ($request->spec_keys as $i => $key) {
@@ -51,19 +48,19 @@ class ProductController extends Controller
                 }
             }
         }
+
         $validated['specs'] = count($specs) ? $specs : null;
         unset($validated['spec_keys'], $validated['spec_vals']);
 
         $product = Product::create($validated);
 
-        // Handle multiple images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $idx => $file) {
                 $path = $file->store('products', 'public');
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image'      => $path,
-                    'caption'    => $request->captions[$idx] ?? null,
+                    'image' => $path,
+                    'caption' => $request->captions[$idx] ?? null,
                     'sort_order' => $idx,
                 ]);
             }
@@ -87,24 +84,22 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
-            'name'              => ['required', 'string', 'max:255'],
-            'category'          => ['nullable', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'category' => ['nullable', 'string', 'max:255'],
             'short_description' => ['nullable', 'string'],
-            'description'       => ['nullable', 'string'],
-            'is_active'         => ['nullable', 'boolean'],
+            'description' => ['nullable', 'string'],
+            'is_active' => ['nullable', 'boolean'],
 
-            // Update: kalau user upload gambar baru, wajib 5 dan max 5
-            'images'            => ['sometimes', 'array', 'min:5', 'max:5'],
-            'images.*'          => ['image', 'mimes:jpg,jpeg,png,webp', 'max:7168'],
+            'images' => ['sometimes', 'array', 'min:5', 'max:5'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:7168'],
 
-            'spec_keys'         => ['nullable', 'array'],
-            'spec_vals'         => ['nullable', 'array'],
+            'spec_keys' => ['nullable', 'array'],
+            'spec_vals' => ['nullable', 'array'],
         ]);
 
-        $validated['slug']      = $this->generateUniqueSlug($validated['name'], $product->id);
+        $validated['slug'] = $this->generateUniqueSlug($validated['name'], $product->id);
         $validated['is_active'] = $request->boolean('is_active');
 
-        // Specs
         $specs = [];
         if ($request->filled('spec_keys')) {
             foreach ($request->spec_keys as $i => $key) {
@@ -113,20 +108,20 @@ class ProductController extends Controller
                 }
             }
         }
+
         $validated['specs'] = count($specs) ? $specs : null;
         unset($validated['spec_keys'], $validated['spec_vals']);
 
         $product->update($validated);
 
-        // New images
         if ($request->hasFile('images')) {
             $lastOrder = $product->images()->max('sort_order') ?? -1;
             foreach ($request->file('images') as $idx => $file) {
                 $path = $file->store('products', 'public');
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image'      => $path,
-                    'caption'    => $request->captions[$idx] ?? null,
+                    'image' => $path,
+                    'caption' => $request->captions[$idx] ?? null,
                     'sort_order' => $lastOrder + 1 + $idx,
                 ]);
             }
@@ -147,7 +142,6 @@ class ProductController extends Controller
             ->with('success', 'Product berhasil dihapus.');
     }
 
-    // Delete single image via AJAX / form
     public function destroyImage(ProductImage $image)
     {
         Storage::disk('public')->delete($image->image);
@@ -163,13 +157,15 @@ class ProductController extends Controller
         $slug = Str::slug($name);
         $original = $slug;
         $counter = 1;
+
         while (
             Product::where('slug', $slug)
-                ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+                ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
                 ->exists()
         ) {
             $slug = $original . '-' . $counter++;
         }
+
         return $slug;
     }
 }

@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gallery extends Model
 {
-    // Paksa agar konsisten antara gallery & gallery_images
-    protected $connection = 'mysql';
 
     protected $fillable = [
         'title',

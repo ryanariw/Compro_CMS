@@ -619,18 +619,37 @@ footer strong{color:var(--gold);}
 
         <div class="grid-3">
             @forelse($galleries as $gallery)
+              @php
+                    $thumbSrc = null;
+                    $coverPath = $gallery->cover_image;
+
+                    if ($coverPath) {
+                        $coverPath = trim($coverPath);
+
+                        if (\Illuminate\Support\Str::startsWith($coverPath, ['http://', 'https://', '//'])) {
+                            $thumbSrc = $coverPath;
+                        } else {
+                            $coverPath = preg_replace('#^/?storage/#', '', $coverPath);
+                            $coverPath = preg_replace('#^/?public/#', '', $coverPath);
+                            $coverPath = ltrim($coverPath, '/');
+
+                            $thumbSrc = asset('storage/' . $coverPath);
+                        }
+                    }
+                @endphp
                 <article class="project-card">
-                    @if ($gallery->cover_image)
-                        <a href="{{ route('galleries.show', $gallery) }}" class="gallery-link">
-                            <img src="{{ asset('storage/' . $gallery->cover_image) }}"
+                    <a href="{{ route('galleries.show', $gallery) }}" class="gallery-link">
+                        @if ($thumbSrc)
+                            <img src="{{ $thumbSrc }}"
                                  alt="{{ $gallery->title }}"
                                  class="gallery-img">
-                        </a>
-                    @else
-                        <a href="{{ route('galleries.show', $gallery) }}" class="gallery-link">
-                            <div class="gallery-img" style="display:flex;align-items:center;justify-content:center;color:rgba(201,168,76,0.4);font-size:36px;">◎</div>
-                        </a>
-                    @endif
+                        @else
+                            <div class="gallery-img" style="display:flex;align-items:center;justify-content:center;color:rgba(201,168,76,0.4);font-size:36px;">
+                                ◎
+                            </div>
+                        @endif
+                    </a>
+
                     <div class="card-body">
                         <a href="{{ route('galleries.show', $gallery) }}" style="text-decoration:none;color:inherit;">
                             <h3>{{ $gallery->title }}</h3>
@@ -640,7 +659,9 @@ footer strong{color:var(--gold);}
                 </article>
             @empty
                 <article class="project-card">
-                    <div class="gallery-img" style="display:flex;align-items:center;justify-content:center;color:rgba(201,168,76,0.4);font-size:36px;">◎</div>
+                    <div class="gallery-img" style="display:flex;align-items:center;justify-content:center;color:rgba(201,168,76,0.4);font-size:36px;">
+                        ◎
+                    </div>
                     <div class="card-body">
                         <h3>Belum ada gallery</h3>
                         <p>Silakan tambahkan data gallery dari dashboard admin.</p>
@@ -649,6 +670,7 @@ footer strong{color:var(--gold);}
             @endforelse
         </div>
     </div>
+</section>
 </section>
 
 {{-- ===== 3 LOKASI ===== --}}
