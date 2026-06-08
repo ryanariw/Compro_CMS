@@ -457,15 +457,15 @@
             <div class="auth-brand">
                 <div class="brand-logo">
                     @if (!empty($setting?->logo))
-                        <img src="{{ asset('storage/' . $setting->logo) }}" alt="{{ $siteName }}">
+                        <img src="{{ asset('storage/' . $setting->logo) }}" alt="{{ $siteName }}" style="width:100%;height:100%;object-fit:contain;display:block;padding:8px;background:transparent;">
                     @else
-                        C
+                        <img
+                            src="{{ asset('logocompro.png') }}"
+                            alt="{{ $siteName }}"
+                            style="width:100%;height:100%;object-fit:contain;display:block;padding:8px;background:transparent;"
+                            loading="eager"
+                        >
                     @endif
-                </div>
-
-                <div>
-                    <p class="brand-title">{{ $siteName }}</p>
-                    <p class="brand-subtitle">Company Profile CMS</p>
                 </div>
             </div>
 
@@ -504,13 +504,16 @@
                 <div class="mobile-brand">
                     <div class="brand-logo">
                         @if (!empty($setting?->logo))
-                            <img src="{{ asset('storage/' . $setting->logo) }}" alt="{{ $siteName }}">
+                            <img src="{{ asset('storage/' . $setting->logo) }}" alt="{{ $siteName }}" style="width:100%;height:100%;object-fit:contain;display:block;padding:8px;background:transparent;">
                         @else
-                            C
+                            <img
+                                src="{{ asset('logocompro.png') }}"
+                                alt="{{ $siteName }}"
+                                style="width:100%;height:100%;object-fit:contain;display:block;padding:8px;background:transparent;"
+                                loading="eager"
+                            >
                         @endif
                     </div>
-
-                    <h1>{{ $siteName }}</h1>
                 </div>
 
                 {{ $slot }}
