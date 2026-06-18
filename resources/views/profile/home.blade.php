@@ -63,7 +63,10 @@ h1,h2,h3{font-family:'Playfair Display',serif;}
     align-items:center;
     text-decoration:none;
     flex-shrink:0;
-    line-height:0; /* hilangkan gap bawah img */
+
+    /* dibuat nempel persis namun tetap aman untuk responsive */
+    gap:1px;
+    line-height:1;
 }
 .brand img{
     height:58px;        /* ukuran logo — sesuaikan jika perlu */
@@ -71,7 +74,38 @@ h1,h2,h3{font-family:'Playfair Display',serif;}
     max-width:180px;
     object-fit:contain;
     display:block;
-    /* tidak ada background, tidak ada border-radius kotak */
+}
+.brand-title{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    color:var(--gold);
+    white-space:nowrap;
+    font-size:18px;
+    line-height:1;
+
+    /* hilangkan shadow blur */
+    text-shadow: none;
+
+    /* kerangka (outline) hitam - tipis */
+    -webkit-text-stroke: 0.6px rgba(0,0,0,.85);
+
+    /* rata tengah (lebih stabil untuk 1 baris) */
+    display:block;
+    text-align:center;
+
+    /* fallback outline kalau stroke tidak didukung - tipis */
+    text-shadow:
+        -0.6px 0 rgba(0,0,0,.85),
+         0.6px 0 rgba(0,0,0,.85),
+         0 -0.6px rgba(0,0,0,.85),
+         0  0.6px rgba(0,0,0,.85);
+}
+@media(max-width:900px){
+    .brand-title{font-size:16px;}
+}
+@media(max-width:600px){
+    .brand-title{font-size:14px;}
 }
 
 /* NAV LINKS */
@@ -303,11 +337,12 @@ footer strong{color:var(--gold);}
         {{-- LOGO — langsung img, TANPA div brand-icon --}}
         <a href="{{ route('home') }}" class="brand" aria-label="{{ $siteName }}">
             <img
-                src="{{ asset('logo1.jpg') }}"
+                src="{{ asset('fixlogo.png') }}"
                 alt="{{ $siteName }}"
                 loading="eager"
                 onerror="this.style.display='none';"
             />
+            <span class="brand-title">GRC Classic Art</span>
         </a>
 
         {{-- Desktop nav --}}

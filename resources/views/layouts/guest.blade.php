@@ -456,16 +456,12 @@
 
             <div class="auth-brand">
                 <div class="brand-logo">
-                    @if (!empty($setting?->logo))
-                        <img src="{{ asset('storage/' . $setting->logo) }}" alt="{{ $siteName }}" style="width:100%;height:100%;object-fit:contain;display:block;padding:8px;background:transparent;">
-                    @else
-                        <img
-                            src="{{ asset('logocompro.png') }}"
-                            alt="{{ $siteName }}"
-                            style="width:100%;height:100%;object-fit:contain;display:block;padding:8px;background:transparent;"
-                            loading="eager"
-                        >
-                    @endif
+                    <img
+                        src="{{ asset('fixlogo.png') }}"
+                        alt="{{ $siteName }}"
+                        style="width:100%;height:100%;object-fit:contain;display:block;padding:8px;background:transparent;"
+                        loading="eager"
+                    >
                 </div>
             </div>
 
