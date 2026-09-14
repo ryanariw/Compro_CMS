@@ -77,13 +77,11 @@
                                     </div>
                                 </td>
                                 <td class="text-end">
-                                    {{-- aksi stack di mobile --}}
-                                    <div class="d-flex flex-column flex-md-row gap-2 align-items-md-end align-items-stretch">
+                                    <div class="d-flex justify-content-end align-center gap-2 flex-wrap">
                                         <a href="{{ route('admin.galleries.edit', $gallery) }}"
                                            class="btn btn-outline-secondary btn-sm w-100 w-md-auto">
                                             Edit
                                         </a>
-
                                         <form action="{{ route('admin.galleries.destroy', $gallery) }}"
                                               method="POST"
                                               onsubmit="return confirm('Yakin hapus gallery ini? Termasuk semua foto di dalamnya.')">
@@ -109,3 +107,4 @@
 </div>
 
 @endsection
+
